@@ -4,3 +4,6 @@ main: de.gamingfelin.simpletimer.SimpleTimer
 api-version: 1.19
 commands:
   timer:
+    description: Simple Timer
+  timerc:
+    description: Simple Timer Config
