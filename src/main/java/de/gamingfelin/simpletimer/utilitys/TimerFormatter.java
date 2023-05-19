@@ -28,19 +28,19 @@ public class TimerFormatter {
         }
 
         if (days >= 1) {
-            string = string + days + "d";
+            string = string + days + "d ";
         }
 
         if (hours >= 1 || days >= 1) {
-            string = string + hours + "h";
+            string = string + hours + "h ";
         }
 
         if (minutes >= 1 || hours >= 1 || days >= 1) {
-            string = string + minutes + "m";
+            string = string + minutes + "m ";
         }
 
         if (seconds >= 1 || minutes >= 1 || hours >= 1 || days >= 1) {
-            string = string + seconds + "s";
+            string = string + seconds + "s ";
         }
 
         return string;
