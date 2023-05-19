@@ -1,0 +1,5 @@
+colors:
+  timer: YELLOW
+  timer-pause: GOLD
+
+timers:
