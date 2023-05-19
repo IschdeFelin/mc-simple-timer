@@ -1,34 +1,53 @@
 package de.gamingfelin.simpletimer;
 
 import de.gamingfelin.simpletimer.commands.TimerCommand;
+import de.gamingfelin.simpletimer.commands.TimercCommand;
 import de.gamingfelin.simpletimer.utilitys.TimerFormatter;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
 
-import javax.swing.*;
-
 public final class SimpleTimer extends JavaPlugin {
     private int time;
-    private BukkitRunnable runnable;
     private static SimpleTimer plugin;
     public boolean isRunning;
     private boolean pauseString;
-    private ChatColor timerColor;
+
+    // Colors
+    public ChatColor timerColor;
+    public ChatColor timerPauseColor;
     @Override
     public void onEnable() {
-        // Plugin startup logic
         plugin = this;
+
+        // Register commands
+        getCommand("timer").setExecutor(new TimerCommand());
+        getCommand("timerc").setExecutor(new TimercCommand());
+
+        // Initial Config
+        saveDefaultConfig();
+
+        // Get colors
+        FileConfiguration config = getConfig();
+        String timerColorString = config.getString("colors.timer");
+        String timerPauseColorString = config.getString("colors.timer-pause");
+        try {
+            timerColor = ChatColor.valueOf(timerColorString);
+            timerPauseColor = ChatColor.valueOf(timerPauseColorString);
+        } catch (Exception e) {
+            getLogger().severe("Error reading colors from config!");
+        }
+
+        // Set vars
         time = 0;
         isRunning = false;
         pauseString = true;
-        getCommand("timer").setExecutor(new TimerCommand());
-        timerColor = ChatColor.YELLOW;
 
-        runnable = new BukkitRunnable() {
+        BukkitRunnable runnable = new BukkitRunnable() {
             @Override
             public void run() {
                 if (isRunning) {
@@ -39,9 +58,9 @@ public final class SimpleTimer extends JavaPlugin {
                 } else {
                     Bukkit.getOnlinePlayers().forEach(player -> {
                         if (pauseString) {
-                            player.spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent(timerColor + "Timer paused"));
+                            player.spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent(timerPauseColor + "Timer paused"));
                         } else {
-                            player.spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent(timerColor + TimerFormatter.formatTime(time)));
+                            player.spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent(timerPauseColor + TimerFormatter.formatTime(time)));
                         }
                     });
                     pauseString = !pauseString;
@@ -49,7 +68,6 @@ public final class SimpleTimer extends JavaPlugin {
             }
         };
         runnable.runTaskTimer(this, 0, 20);
-        getLogger().info("Initialising Simple Timer Plugin!");
     }
 
     @Override
