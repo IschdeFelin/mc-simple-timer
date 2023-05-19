@@ -41,3 +41,23 @@ The Plugin adds a simple timer for all Minecraft Servers supporting Spigot plugi
 
 <h2>How to edit the config?</h2>
 <p>The config.yml file is in the SimpleTimer subfolder of the plugins folder on your server. To edit something, you open the file. To change the colors of the timer, you can change the entries under colors. The allowed colors are listed below. The entry <code>timer</code> represents the color of the timer when it is running and <code>timer-pause</code> when it is paused.</p>
+<p>Allowed colors:</p>
+<ul>
+    <li>AQUA</li>
+    <li>BLACK</li>
+    <li>BLUE</li>
+    <li>GRAY</li>
+    <li>GREEN</li>
+    <li>GOLD</li>
+    <li>ITALIC</li>
+    <li>LIGHT_PURPLE</li>
+    <li>RED</li>
+    <li>WHITE</li>
+    <li>YELLOW</li>
+    <li>DARK_AQUA</li>
+    <li>DARK_BLUE</li>
+    <li>DARK_GRAY</li>
+    <li>DARK_GREEN</li>
+    <li>DARK_PURPLE</li>
+    <li>DARK_RED</li>
+</ul>
