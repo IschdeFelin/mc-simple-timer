@@ -36,7 +36,7 @@ public class TimerCommand implements TabExecutor {
                         SimpleTimer simpleTimer = SimpleTimer.getPlugin();
                         FileConfiguration config = simpleTimer.getConfig();
                         Set<String> timers = config.getConfigurationSection("timers").getKeys(false);
-                        String timersString = "Alle Timer: ";
+                        String timersString = "All timers: ";
                         boolean firstEntry = true;
                         for (String timer : timers) {
                             if (firstEntry) {
@@ -71,6 +71,7 @@ public class TimerCommand implements TabExecutor {
                         int time = simpleTimer.getTime();
                         config.set("timers." + name, time);
                         simpleTimer.saveConfig();
+                        commandSender.sendMessage("Timer saved!");
                     } catch (Exception e) {
                         commandSender.sendMessage(ChatColor.RED + "Please enter a valid name!");
                     }
@@ -94,7 +95,7 @@ public class TimerCommand implements TabExecutor {
                         String name = strings[1];
                         int time = config.getInt("timers." + name);
                         String formattedTime = TimerFormatter.formatTime(time);
-                        commandSender.sendMessage("Der Timer " + name + " steht auf: " + formattedTime);
+                        commandSender.sendMessage("The timer " + name + " is on: " + formattedTime);
                     } catch (Exception e) {
                         commandSender.sendMessage(ChatColor.RED + "Please enter a valid name!");
                     }
