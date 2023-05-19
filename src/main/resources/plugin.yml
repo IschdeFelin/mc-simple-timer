@@ -1,4 +1,4 @@
-name: Simple Timer
+name: SimpleTimer
 version: '${project.version}'
 main: de.gamingfelin.simpletimer.SimpleTimer
 api-version: 1.19
