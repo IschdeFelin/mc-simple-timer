@@ -1,6 +1,5 @@
 package de.gamingfelin.simpletimer.commands;
 
-import com.sun.org.apache.bcel.internal.generic.SIPUSH;
 import de.gamingfelin.simpletimer.SimpleTimer;
 import de.gamingfelin.simpletimer.utilitys.TimerFormatter;
 import org.bukkit.ChatColor;
@@ -10,7 +9,6 @@ import org.bukkit.command.TabExecutor;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -34,21 +32,25 @@ public class TimerCommand implements TabExecutor {
                     simpleTimer.setTime(0);
                     return true;
                 } else if (strings[0].equalsIgnoreCase("list")) {
-                    SimpleTimer simpleTimer = SimpleTimer.getPlugin();
-                    FileConfiguration config = simpleTimer.getConfig();
-                    Set<String> timers = config.getKeys(false);
-                    String timersString = "Alle Timer: ";
-                    boolean firstEntry = true;
-                    for (String timer : timers) {
-                        if (firstEntry) {
-                            timersString = timersString + timer;
-                            firstEntry = false;
-                        } else {
-                            timersString = timersString + ", " + timer;
+                    try {
+                        SimpleTimer simpleTimer = SimpleTimer.getPlugin();
+                        FileConfiguration config = simpleTimer.getConfig();
+                        Set<String> timers = config.getConfigurationSection("timers").getKeys(false);
+                        String timersString = "Alle Timer: ";
+                        boolean firstEntry = true;
+                        for (String timer : timers) {
+                            if (firstEntry) {
+                                timersString = timersString + timer;
+                                firstEntry = false;
+                            } else {
+                                timersString = timersString + ", " + timer;
+                            }
                         }
+                        commandSender.sendMessage(timersString);
+                        return true;
+                    } catch (Exception e) {
+                        commandSender.sendMessage("No timers available!");
                     }
-                    commandSender.sendMessage(timersString);
-                    return true;
                 }
             } else if (strings.length == 2) {
                 if (strings[0].equalsIgnoreCase("set")) {
@@ -67,7 +69,7 @@ public class TimerCommand implements TabExecutor {
                     try {
                         String name = strings[1];
                         int time = simpleTimer.getTime();
-                        config.set(name, time);
+                        config.set("timers." + name, time);
                         simpleTimer.saveConfig();
                     } catch (Exception e) {
                         commandSender.sendMessage(ChatColor.RED + "Please enter a valid name!");
@@ -78,7 +80,7 @@ public class TimerCommand implements TabExecutor {
                     FileConfiguration config = simpleTimer.getConfig();
                     try {
                         String name = strings[1];
-                        int newTime = config.getInt(name);
+                        int newTime = config.getInt("timers." + name);
                         simpleTimer.setTime(newTime);
                         simpleTimer.isRunning = false;
                     } catch (Exception e) {
@@ -90,7 +92,7 @@ public class TimerCommand implements TabExecutor {
                     FileConfiguration config = simpleTimer.getConfig();
                     try {
                         String name = strings[1];
-                        int time = config.getInt(name);
+                        int time = config.getInt("timers." + name);
                         String formattedTime = TimerFormatter.formatTime(time);
                         commandSender.sendMessage("Der Timer " + name + " steht auf: " + formattedTime);
                     } catch (Exception e) {
@@ -113,20 +115,19 @@ public class TimerCommand implements TabExecutor {
         arguments1.add("reset");
         arguments1.add("save");
         arguments1.add("load");
-
         arguments1.add("list");
         arguments1.add("show");
 
         if (strings.length == 1) {
             for (String string : arguments1){
                 if (string.toLowerCase().startsWith(strings[0].toLowerCase())) {
-                    result.add(s);
+                    result.add(string);
                 }
             }
         } else if (strings.length == 2) {
             if (strings[0].equalsIgnoreCase("load") || strings[0].equalsIgnoreCase("show")) {
                 FileConfiguration config = SimpleTimer.getPlugin().getConfig();
-                for (String timerName : config.getKeys(false)) {
+                for (String timerName : config.getConfigurationSection("timers").getKeys(false)) {
                     if (timerName.toLowerCase().startsWith(strings[1].toLowerCase())) {
                         result.add(timerName);
                     }
