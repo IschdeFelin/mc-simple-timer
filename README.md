@@ -1,5 +1,6 @@
 <h1>Simple Timer</h1>
 <p>This is a simple Timer Plugin for Minecraft Servers running on Bukkit, Spigot, Paper, etc.</p>
+<p>Download: <a href="">Modrinthhttps://modrinth.com/plugin/simple-timer</a></p>
 
 <h2>What does the Plugin add?</h2>
 The Plugin adds a simple timer for all Minecraft Servers supporting Spigot plugins. To use the timer two commands are added:
