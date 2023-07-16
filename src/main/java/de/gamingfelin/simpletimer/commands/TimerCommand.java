@@ -128,9 +128,11 @@ public class TimerCommand implements TabExecutor {
         } else if (strings.length == 2) {
             if (strings[0].equalsIgnoreCase("load") || strings[0].equalsIgnoreCase("show")) {
                 FileConfiguration config = SimpleTimer.getPlugin().getConfig();
-                for (String timerName : config.getConfigurationSection("timers").getKeys(false)) {
-                    if (timerName.toLowerCase().startsWith(strings[1].toLowerCase())) {
-                        result.add(timerName);
+                if (config.getConfigurationSection("timers") != null) {
+                    for (String timerName : config.getConfigurationSection("timers").getKeys(false)) {
+                        if (timerName.toLowerCase().startsWith(strings[1].toLowerCase())) {
+                            result.add(timerName);
+                        }
                     }
                 }
             }
