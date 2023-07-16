@@ -1,7 +1,7 @@
 name: SimpleTimer
 version: '${project.version}'
 main: de.gamingfelin.simpletimer.SimpleTimer
-api-version: 1.19
+api-version: 1.20
 commands:
   timer:
     description: Simple Timer
