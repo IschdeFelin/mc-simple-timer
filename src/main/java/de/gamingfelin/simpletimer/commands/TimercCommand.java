@@ -21,7 +21,6 @@ public class TimercCommand implements TabExecutor {
                     FileConfiguration config = simpleTimer.getConfig();
                     String timerColorString = config.getString("colors.timer");
                     String timerPauseColorString = config.getString("colors.timer-pause");
-                    System.out.println("tc"+timerColorString);
 
                     simpleTimer.timerColor = ChatColor.valueOf(timerColorString);
                     simpleTimer.timerPauseColor = ChatColor.valueOf(timerPauseColorString);
