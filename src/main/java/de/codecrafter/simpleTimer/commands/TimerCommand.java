@@ -23,16 +23,16 @@ public class TimerCommand implements TabExecutor {
         if (strings.length == 1) {
             switch (strings[0].toLowerCase()) {
                 case "pause" -> {
-                    simpleTimer.setRunning(false);
+                    simpleTimer.getActiveTimer().setRunning(false);
                     return true;
                 }
                 case "resume" -> {
-                    simpleTimer.setRunning(true);
+                    simpleTimer.getActiveTimer().setRunning(true);
                     return true;
                 }
                 case "reset" -> {
-                    simpleTimer.setRunning(false);
-                    simpleTimer.setTime(0L);
+                    simpleTimer.getActiveTimer().setRunning(false);
+                    simpleTimer.getActiveTimer().setTime(0L);
                     return true;
                 }
                 case "reload" -> {
@@ -40,12 +40,17 @@ public class TimerCommand implements TabExecutor {
                     commandSender.sendMessage("Configuration reloaded.");
                     return true;
                 }
+                case "save" -> {
+                    simpleTimer.getTimerManager().saveToFile();
+                    commandSender.sendMessage("Timers saved.");
+                    return true;
+                }
             }
         } else if (strings.length == 2) {
             if (strings[0].equalsIgnoreCase("set")) {
                 try {
-                    simpleTimer.setRunning(false);
-                    simpleTimer.setTime(Long.parseLong(strings[1]));
+                    simpleTimer.getActiveTimer().setRunning(false);
+                    simpleTimer.getActiveTimer().setTime(Long.parseLong(strings[1]));
                 } catch (Exception e) {
                     commandSender.sendMessage("Please enter a valid number for the time.");
                 }
