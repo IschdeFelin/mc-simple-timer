@@ -3,6 +3,12 @@ package de.codecrafter.simpleTimer.utils;
 import java.time.Duration;
 
 public class Formatter {
+    /**
+     * Formats the given time (in seconds) in following format: {@code %d %h %m %s}.
+     *
+     * @param seconds The time in seconds to format.
+     * @return The formatted string.
+     */
     public static String formatTime(long seconds) {
         Duration duration = Duration.ofSeconds(seconds);
 

@@ -4,6 +4,9 @@ import de.codecrafter.simpleTimer.SimpleTimer;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.configuration.file.FileConfiguration;
 
+/**
+ * Provides the config for the plugin.
+ */
 public class TimerConfig {
     private final SimpleTimer plugin;
 
@@ -15,17 +18,30 @@ public class TimerConfig {
     private NamedTextColor colorPaused;
     private NamedTextColor colorPauseMessage;
 
+    /**
+     * Creates an instance of {@code TimerConfig} class.
+     *
+     * @param plugin The plugin.
+     */
     public TimerConfig(SimpleTimer plugin) {
         this.plugin = plugin;
         this.load(plugin.getConfig());
     }
 
+    /**
+     * Reloads the config from the config file on the disk.
+     */
     public void reload() {
         this.plugin.reloadConfig();
         this.load(plugin.getConfig());
         this.plugin.getComponentLogger().info("Timer config reloaded.");
     }
 
+    /**
+     * Populates the attributes of the class instance with the values from the config file.
+     *
+     * @param config The config object.
+     */
     private void load(FileConfiguration config) {
         this.show = config.getBoolean("timer.show", true);
         this.showPauseMessage = config.getBoolean("timer.show_pause_message", true);
@@ -33,7 +49,6 @@ public class TimerConfig {
         this.colorRunning = NamedTextColor.NAMES.value(config.getString("timer.color_running", "YELLOW").toLowerCase());
         this.colorPaused = NamedTextColor.NAMES.value(config.getString("timer.color_paused", "GOLD").toLowerCase());
         this.colorPauseMessage = NamedTextColor.NAMES.value(config.getString("timer.color_pause_message", "GOLD").toLowerCase());
-        System.out.println(colorPaused);
     }
 
     public boolean isShow() {
