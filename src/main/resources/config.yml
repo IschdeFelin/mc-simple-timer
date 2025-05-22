@@ -1,0 +1,18 @@
+timer:
+  # Show the timer as an ActionBar message in-game
+  show: true
+
+  # When the timer is paused, alternate between showing the timer value and a custom pause message
+  show_pause_message: true
+
+  # The message to display when the timer is paused
+  pause_message: "Timer paused"
+
+  # Text color of the running timer (e.g. "YELLOW", "GREEN", "WHITE")
+  color_running: "YELLOW"
+
+  # Text color of the timer value when paused
+  color_paused: "GOLD"
+
+  # Text color of the pause message
+  color_pause_message: "GOLD"
