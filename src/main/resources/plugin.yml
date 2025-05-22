@@ -1,0 +1,6 @@
+name: SimpleTimer
+version: '1.0.0'
+main: de.codecrafter.simpleTimer.SimpleTimer
+api-version: '1.21'
+authors: [ Felix Heidisch ]
+website: https://github.com/IschdeFelin
