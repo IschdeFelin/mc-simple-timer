@@ -115,6 +115,15 @@ public class TimerManager {
     }
 
     /**
+     * Returns a list of all timer objects.
+     *
+     * @return A list with all timer objects.
+     */
+    public List<Timer> getAllTimers() {
+        return new ArrayList<>(timers.values());
+    }
+
+    /**
      * Adds a time to the {@code TimerManager}.
      *
      * @param timer The timer object to add.
