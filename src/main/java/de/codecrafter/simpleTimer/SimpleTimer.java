@@ -5,6 +5,7 @@ import de.codecrafter.simpleTimer.models.Timer;
 import de.codecrafter.simpleTimer.utils.TimerConfig;
 import de.codecrafter.simpleTimer.utils.TimerManager;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitScheduler;
 
@@ -30,11 +31,17 @@ public final class SimpleTimer extends JavaPlugin {
         timerManager = new TimerManager(this);
         activeTimer = timerManager.getActiveTimer();
 
-        // create default timer if no timer exists
+        // check if activeTimer is set
         if (activeTimer == null) {
-            activeTimer = new Timer("default", 0L, false);
-            timerManager.addTimer(activeTimer);
-            timerManager.setActiveTimer(activeTimer.getName());
+            // if not and no timers exist create the default timer
+            if (timerManager.getTimerNames().isEmpty()) {
+                activeTimer = new Timer("default", 0L, false);
+                timerManager.addTimer(activeTimer);
+                timerManager.setActiveTimer(activeTimer.getName());
+            } else {
+                // else select the first timer from timerManager
+                activeTimer =  timerManager.getTimer(timerManager.getTimerNames().getFirst());
+            }
         }
 
         // register commands
@@ -48,6 +55,14 @@ public final class SimpleTimer extends JavaPlugin {
         scheduler.runTaskTimer(this, () -> {
             // only when players are online
             if (!getServer().getOnlinePlayers().isEmpty()) {
+                if (activeTimer == null) {
+                    getServer().getOnlinePlayers().forEach(player -> {
+                        player.sendActionBar(Component.text("No timer selected")
+                                .color(NamedTextColor.RED));
+                    });
+                    return;
+                }
+
                 if (activeTimer.isRunning()) {
                     activeTimer.addTime();
 
@@ -94,5 +109,10 @@ public final class SimpleTimer extends JavaPlugin {
 
     public Timer getActiveTimer() {
         return activeTimer;
+    }
+
+    public void setActiveTimer(Timer activeTimer) {
+        this.activeTimer = activeTimer;
+        timerManager.setActiveTimer(activeTimer != null ? activeTimer.getName() : null);
     }
 }
