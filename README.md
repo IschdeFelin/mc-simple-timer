@@ -1,102 +1,119 @@
 # Simple Timer
 
-This is a simple timer plugin for Minecraft servers running Bukkit, Spigot, Paper, etc.
+A simple and interactive timer plugin for Minecraft servers (Spigot, Paper, etc.),
+supporting multiple named timers with intuitive commands and clickable in-game UI elements.
 
 **Download:** [https://modrinth.com/plugin/simple-timer](https://modrinth.com/plugin/simple-timer)
 
 ---
 
-## What does the Plugin add?
+## Features
 
-This plugin adds a simple timer for all Minecraft servers supporting Spigot plugins.  
-To use the timer, the following command is available:
+- Manage multiple timers with custom names.
+- Clickable in-game timer list with hover tooltips and command suggestions.
+- Supports pausing, resuming, resetting, saving, and reloading.
+- Configurable display with color options and pause messages.
 
-- `/timer`
+---
 
-## How to use?
+## Commands
 
-### Start/Resume the timer
-Use the command:
+### `/timer create <name>`
+Creates a new timer with the given name.
+Timer names must be:
 
+- Not empty
+- ≤ 20 characters
+- Contain only letters, numbers, _ or -
+
+Example:
 ```bash
-/timer resume
+/timer create speedrun1
 ```
 
-### Pause the timer
-Use the command:
+If successful, a clickable message will appear to select it immediately.
 
-```bash
-/timer pause
+### `/timer select <name>`
+Selects the timer with the given name and pauses it by default.
+
+### `/timer name`
+Shows the name of the currently selected timer.
+
+### `/timer list`
+Lists all available timers with their current times.
+Each entry is:
+
+- **Clickable:** suggests `/timer select <name>`
+- **Hoverable:** shows "Click to select"
+
+Example output:
+```
+These timers exist:
+- speedrun1 (0s)
+- bossfight (1h 23m 51s)
 ```
 
-### Reset the timer
-Use the command:
+### `/timer set <seconds>`
+Sets the current timer to a specific time (in seconds).
 
-```bash
-/timer reset
-```
-
-### Set the timer to a specific time
-Set the timer to a specific time (in seconds) using:
-
-```bash
-/timer set <time_in_seconds>
-```
-
-For example, to set the timer to 5 minutes (300 seconds):
-
+Example:
 ```bash
 /timer set 300
 ```
 
-### Reload the configuration
-If you change something in the config, reload it with:
+### `/timer pause`
+Pauses the current timer.
 
-```bash
-/timer reload
+### `/timer resume`
+Resumes the current timer.
+
+### `/timer reset`
+Stops and resets the current timer to 0.
+
+### `/timer remove <name>`
+Removes the specified timer.
+If the currently active timer is removed, no timer remains selected.
+
+### `/timer reload`
+Reloads the configuration file from disk.
+
+### `/timer save`
+Manually saves all timer data to disk.
+Otherwise, the data is saved with every server shutdown.
+
+---
+
+## Installation
+
+1) Download the `.jar` file from Modrinth.
+2) Place it in your server's `/plugins` folder.
+3) Restart the server.
+
+---
+
+## Configuration
+
+Located at:
+```
+/plugins/SimpleTimer/config.yml
 ```
 
----
+### Options
 
-## How to install?
+| Option            | Description                                                 |
+|-------------------|-------------------------------------------------------------|
+| show              | Show timer as ActionBar? (`true`/`false`)                   |
+| showPauseMessage	 | Show a custom message while paused (alternating with time)? |
+| pauseMessage      | The message to display when paused.                         |
+| colorRunning      | Timer color when running (YELLOW, WHITE, etc.)              |
+| colorPaused       | Timer value color when paused.                              |
+| colorPauseMessage | Color of the pause message.                                 |
 
-To install the Simple Timer plugin on your Minecraft server, place the downloaded `.jar` file into your server's `plugins` folder and restart your server.
+### Available Colors
 
----
-
-## How to edit the config?
-
-The `config.yml` file is located in the `SimpleTimer` subfolder inside the `plugins` folder on your server.  
-Open this file to change settings.
-
-### Config options
-
-- **show**: Whether to show the timer as an ActionBar message in-game.
-- **showPauseMessage**: When the timer is paused, alternate between showing the timer value and a custom pause message.
-- **pauseMessage**: The message to display when the timer is paused.
-- **colorRunning**: Text color of the running timer (e.g. "YELLOW", "GREEN", "WHITE").
-- **colorPaused**: Text color of the timer value when paused.
-- **colorPauseMessage**: Text color of the pause message.
+AQUA, BLACK, BLUE, DARK_AQUA, DARK_BLUE, DARK_GRAY, DARK_GREEN, DARK_PURPLE,
+DARK_RED, GOLD, GRAY, GREEN, LIGHT_PURPLE, RED, WHITE, YELLOW
 
 ---
 
-### Allowed colors
-
-You can use the following color names for the color settings:
-
-- AQUA
-- BLACK
-- BLUE
-- DARK_AQUA
-- DARK_BLUE
-- DARK_GRAY
-- DARK_GREEN
-- DARK_PURPLE
-- DARK_RED
-- GOLD
-- GRAY
-- GREEN
-- LIGHT_PURPLE
-- RED
-- WHITE
-- YELLOW
+For issues, suggestions, or contributions, feel free to open an issue or pull request on the [GitHub repository](https://github.com/IschdeFelin/mc-simple-timer).
