@@ -77,10 +77,10 @@ public final class SimpleTimer extends JavaPlugin {
                         getServer().getOnlinePlayers().forEach(player -> {
                             if (showPauseString && timerConfig.isShowPauseMessage()) {
                                 player.sendActionBar(Component.text(timerConfig.getPauseMessage())
-                                        .color(getTimerConfig().getColorPaused()));
+                                        .color(getTimerConfig().getColorPauseMessage()));
                             } else {
                                 player.sendActionBar(Component.text(formatTime(activeTimer.getTime()))
-                                        .color(getTimerConfig().getColorPauseMessage()));
+                                        .color(getTimerConfig().getColorPaused()));
                             }
                         });
                     }
