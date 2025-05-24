@@ -29,16 +29,25 @@ public class TimerCommand implements TabExecutor {
         if (strings.length == 1) {
             switch (strings[0].toLowerCase()) {
                 case "pause" -> {
-                    simpleTimer.getActiveTimer().setRunning(false);
+                    Timer timer = getActiveTimerOrWarn(simpleTimer, commandSender);
+                    if (timer == null) return true;
+
+                    timer.setRunning(false);
                     return true;
                 }
                 case "resume" -> {
-                    simpleTimer.getActiveTimer().setRunning(true);
+                    Timer timer = getActiveTimerOrWarn(simpleTimer, commandSender);
+                    if (timer == null) return true;
+
+                    timer.setRunning(true);
                     return true;
                 }
                 case "reset" -> {
-                    simpleTimer.getActiveTimer().setRunning(false);
-                    simpleTimer.getActiveTimer().setTime(0L);
+                    Timer timer = getActiveTimerOrWarn(simpleTimer, commandSender);
+                    if (timer == null) return true;
+
+                    timer.setRunning(false);
+                    timer.setTime(0L);
                     return true;
                 }
                 case "reload" -> {
@@ -75,57 +84,64 @@ public class TimerCommand implements TabExecutor {
                     return true;
                 }
                 case "name" -> {
-                    if (simpleTimer.getActiveTimer() == null) {
-                        commandSender.sendMessage("No timer selected.");
-                        return true;
-                    }
+                    Timer timer = getActiveTimerOrWarn(simpleTimer, commandSender);
+                    if (timer == null) return true;
 
-                    String activeTimerName = simpleTimer.getActiveTimer().getName();
-                    commandSender.sendMessage("The current timer is: " + activeTimerName);
+                    commandSender.sendMessage("The current timer is: " + timer.getName());
                     return true;
                 }
                 case "state" -> {
-                    Timer timer = simpleTimer.getActiveTimer();
-
-                    if (timer == null) {
-                        commandSender.sendMessage("No timer selected.");
-                        return true;
-                    }
+                    Timer timer = getActiveTimerOrWarn(simpleTimer, commandSender);
+                    if (timer == null) return true;
 
                     commandSender.sendMessage("State of timer " + timer.getName() + ": " + formatTime(timer.getTime()));
+                    return true;
+                }
+                case "remove" -> {
+                    Timer timer = getActiveTimerOrWarn(simpleTimer, commandSender);
+                    if (timer == null) return true;
+
+                    simpleTimer.getTimerManager().removeTimer(timer);
+                    if (Objects.equals(simpleTimer.getActiveTimer().getName(), timer.getName())) {
+                        simpleTimer.setActiveTimer(null);
+                    }
+                    commandSender.sendMessage("Removed timer: " + timer.getName());
                     return true;
                 }
             }
         } else if (strings.length == 2) {
             switch (strings[0].toLowerCase()) {
                 case "set" -> {
+                    Timer timer = getActiveTimerOrWarn(simpleTimer, commandSender);
+                    if (timer == null) return true;
+                    timer.setRunning(false);
+
                     try {
-                        simpleTimer.getActiveTimer().setRunning(false);
-                        simpleTimer.getActiveTimer().setTime(Long.parseLong(strings[1]));
+                        long newState = Long.parseLong(strings[1]);
+
+                        if (newState <= 0) {
+                            commandSender.sendMessage("New time must be greater than 0.");
+                        }
+
+                        timer.setTime(newState);
                     } catch (Exception e) {
                         commandSender.sendMessage("Please enter a valid number for the time.");
                     }
+
                     return true;
                 }
                 case "select" -> {
-                    Timer timer = simpleTimer.getTimerManager().getTimer(strings[1]);
-
-                    if (timer == null) {
-                        commandSender.sendMessage("This timer does not exist.");
-                        return true;
-                    }
+                    Timer timer = getTimerOrWarn(simpleTimer, commandSender, strings[1]);
+                    if (timer == null) return true;
 
                     simpleTimer.setActiveTimer(timer);
                     simpleTimer.getActiveTimer().setRunning(false);
+                    commandSender.sendMessage("Selected timer: " + timer.getName());
                     return true;
                 }
                 case "remove" -> {
-                    Timer timer = simpleTimer.getTimerManager().getTimer(strings[1]);
-
-                    if (timer == null) {
-                        commandSender.sendMessage("This timer does not exist.");
-                        return true;
-                    }
+                    Timer timer = getTimerOrWarn(simpleTimer, commandSender, strings[1]);
+                    if (timer == null) return true;
 
                     simpleTimer.getTimerManager().removeTimer(timer);
                     if (Objects.equals(simpleTimer.getActiveTimer().getName(), timer.getName())) {
@@ -162,12 +178,8 @@ public class TimerCommand implements TabExecutor {
                     return true;
                 }
                 case "state" -> {
-                    Timer timer = simpleTimer.getTimerManager().getTimer(strings[1]);
-
-                    if (timer == null) {
-                        commandSender.sendMessage("This timer does not exist.");
-                        return true;
-                    }
+                    Timer timer = getTimerOrWarn(simpleTimer, commandSender, strings[1]);
+                    if (timer == null) return true;
 
                     commandSender.sendMessage("State of timer " + timer.getName() + ": " + formatTime(timer.getTime()));
                     return true;
@@ -182,25 +194,37 @@ public class TimerCommand implements TabExecutor {
     @Override
     public @Nullable List<String> onTabComplete(@NotNull CommandSender commandSender, @NotNull Command command, @NotNull String s, @NotNull String @NotNull [] strings) {
         List<String> options = List.of("pause", "resume", "reset", "reload", "save", "list", "set", "select", "remove", "name", "create", "state");
-        List<String> completions = new ArrayList<>();
 
         if (strings.length == 1) {
-            for (String string : options){
-                if (string.toLowerCase().startsWith(strings[0].toLowerCase())) {
-                    completions.add(string);
-                }
-            }
-        } else if (strings.length == 2) {
-            if (strings[0].equalsIgnoreCase("select") || strings[0].equalsIgnoreCase("remove")  || strings[0].equalsIgnoreCase("state")) {
-                List<String> timers = SimpleTimer.getPlugin().getTimerManager().getTimerNames();
-                for (String string : timers){
-                    if (string.toLowerCase().startsWith(strings[1].toLowerCase())) {
-                        completions.add(string);
-                    }
-                }
+            return options.stream()
+                    .filter(option -> option.startsWith(strings[0].toLowerCase()))
+                    .toList();
+        } if (strings.length == 2) {
+            if (List.of("select", "remove", "state").contains(strings[0].toLowerCase())) {
+                return SimpleTimer.getPlugin().getTimerManager().getTimerNames().stream()
+                        .filter(name -> name.startsWith(strings[1].toLowerCase()))
+                        .toList();
             }
         }
 
-        return completions;
+        return List.of();
+    }
+
+    private Timer getTimerOrWarn(SimpleTimer plugin, CommandSender sender, String name) {
+        Timer timer = plugin.getTimerManager().getTimer(name);
+        if (timer == null) {
+            sender.sendMessage("Timer \"" + name + "\" does not exist.");
+        }
+
+        return timer;
+    }
+
+    private Timer getActiveTimerOrWarn(SimpleTimer plugin, CommandSender sender) {
+        Timer timer = plugin.getActiveTimer();
+        if (timer == null) {
+            sender.sendMessage("No timer selected.");
+        }
+
+        return timer;
     }
 }
