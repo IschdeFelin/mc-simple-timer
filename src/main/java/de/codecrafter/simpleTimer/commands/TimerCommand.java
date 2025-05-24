@@ -84,6 +84,17 @@ public class TimerCommand implements TabExecutor {
                     commandSender.sendMessage("The current timer is: " + activeTimerName);
                     return true;
                 }
+                case "state" -> {
+                    Timer timer = simpleTimer.getActiveTimer();
+
+                    if (timer == null) {
+                        commandSender.sendMessage("No timer selected.");
+                        return true;
+                    }
+
+                    commandSender.sendMessage("State of timer " + timer.getName() + ": " + formatTime(timer.getTime()));
+                    return true;
+                }
             }
         } else if (strings.length == 2) {
             switch (strings[0].toLowerCase()) {
@@ -150,16 +161,27 @@ public class TimerCommand implements TabExecutor {
                             .clickEvent(ClickEvent.suggestCommand("/timer select " + newTimer.getName())));
                     return true;
                 }
+                case "state" -> {
+                    Timer timer = simpleTimer.getTimerManager().getTimer(strings[1]);
+
+                    if (timer == null) {
+                        commandSender.sendMessage("This timer does not exist.");
+                        return true;
+                    }
+
+                    commandSender.sendMessage("State of timer " + timer.getName() + ": " + formatTime(timer.getTime()));
+                    return true;
+                }
             }
         }
 
-        commandSender.sendMessage("Usage: /timer <pause|resume|reset|reload|save|name|list|set|select|remove|create> [time_in_seconds|timer_name]");
+        commandSender.sendMessage("Usage: /timer <pause|resume|reset|reload|save|name|list|set|select|remove|create|state> [time_in_seconds|timer_name]");
         return true;
     }
 
     @Override
     public @Nullable List<String> onTabComplete(@NotNull CommandSender commandSender, @NotNull Command command, @NotNull String s, @NotNull String @NotNull [] strings) {
-        List<String> options = List.of("pause", "resume", "reset", "reload", "save", "list", "set", "select", "remove", "name", "create");
+        List<String> options = List.of("pause", "resume", "reset", "reload", "save", "list", "set", "select", "remove", "name", "create", "state");
         List<String> completions = new ArrayList<>();
 
         if (strings.length == 1) {
@@ -169,7 +191,7 @@ public class TimerCommand implements TabExecutor {
                 }
             }
         } else if (strings.length == 2) {
-            if (strings[0].equalsIgnoreCase("select") || strings[0].equalsIgnoreCase("remove")) {
+            if (strings[0].equalsIgnoreCase("select") || strings[0].equalsIgnoreCase("remove")  || strings[0].equalsIgnoreCase("state")) {
                 List<String> timers = SimpleTimer.getPlugin().getTimerManager().getTimerNames();
                 for (String string : timers){
                     if (string.toLowerCase().startsWith(strings[1].toLowerCase())) {
