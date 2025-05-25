@@ -172,6 +172,13 @@ public class TimerCommand implements TabExecutor {
 
                     Timer newTimer = new Timer(timerName, 0L, false);
                     simpleTimer.getTimerManager().addTimer(newTimer);
+
+                    if (simpleTimer.getTimerConfig().isAutoSelectNewTimer()) {
+                        simpleTimer.setActiveTimer(newTimer);
+                        commandSender.sendMessage("Created an selected new timer: " + newTimer.getName());
+                        return true;
+                    }
+
                     commandSender.sendMessage(Component.text("Added timer: " + newTimer.getName())
                             .hoverEvent(HoverEvent.showText(Component.text("Click to select")))
                             .clickEvent(ClickEvent.suggestCommand("/timer select " + newTimer.getName())));

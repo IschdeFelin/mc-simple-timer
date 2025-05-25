@@ -19,6 +19,7 @@ public class TimerConfig {
     private NamedTextColor colorPauseMessage;
     private boolean runWithoutPlayers;
     private boolean pauseOnPlayerDeath;
+    private boolean autoSelectNewTimer;
 
     /**
      * Creates an instance of {@code TimerConfig} class.
@@ -53,6 +54,7 @@ public class TimerConfig {
         this.colorPauseMessage = NamedTextColor.NAMES.value(config.getString("timer.color_pause_message", "GOLD").toLowerCase());
         this.runWithoutPlayers = config.getBoolean("timer.run_without_players", false);
         this.pauseOnPlayerDeath = config.getBoolean("timer.pause_on_player_death", false);
+        this.autoSelectNewTimer = config.getBoolean("timer.auto_select_new_timer", false);
     }
 
     public boolean isShow() {
@@ -85,5 +87,9 @@ public class TimerConfig {
 
     public boolean isPauseOnPlayerDeath() {
         return pauseOnPlayerDeath;
+    }
+
+    public boolean isAutoSelectNewTimer() {
+        return autoSelectNewTimer;
     }
 }

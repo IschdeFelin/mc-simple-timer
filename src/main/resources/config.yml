@@ -22,3 +22,6 @@ timer:
 
   # If true, the timer will pause automatically when a player dies
   pause_on_player_death: false
+
+  # Automatically select the newly created timer
+  auto_select_new_timer: false
