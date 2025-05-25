@@ -1,6 +1,7 @@
 package de.codecrafter.simpleTimer;
 
 import de.codecrafter.simpleTimer.commands.TimerCommand;
+import de.codecrafter.simpleTimer.listeners.PlayerDeathListener;
 import de.codecrafter.simpleTimer.models.Timer;
 import de.codecrafter.simpleTimer.utils.TimerConfig;
 import de.codecrafter.simpleTimer.utils.TimerManager;
@@ -46,6 +47,9 @@ public final class SimpleTimer extends JavaPlugin {
 
         // register commands
         getCommand("timer").setExecutor(new TimerCommand());
+
+        // register event listeners
+        getServer().getPluginManager().registerEvents(new PlayerDeathListener(), this);
 
         // init timer vars
         showPauseString = true;

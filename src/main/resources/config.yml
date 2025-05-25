@@ -19,3 +19,6 @@ timer:
 
   # If true, the timer will continue running even when no players are online
   run_without_players: false
+
+  # If true, the timer will pause automatically when a player dies
+  pause_on_player_death: false
