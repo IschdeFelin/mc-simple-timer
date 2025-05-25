@@ -2,9 +2,11 @@ package de.codecrafter.simpleTimer;
 
 import de.codecrafter.simpleTimer.commands.TimerCommand;
 import de.codecrafter.simpleTimer.listeners.PlayerDeathListener;
+import de.codecrafter.simpleTimer.listeners.PlayerJoinListener;
 import de.codecrafter.simpleTimer.models.Timer;
 import de.codecrafter.simpleTimer.utils.TimerConfig;
 import de.codecrafter.simpleTimer.utils.TimerManager;
+import de.codecrafter.simpleTimer.utils.UpdateChecker;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.entity.Player;
@@ -31,6 +33,13 @@ public final class SimpleTimer extends JavaPlugin {
         saveDefaultConfig();
         timerConfig = new TimerConfig(this);
 
+        // get scheduler
+        BukkitScheduler scheduler = getServer().getScheduler();
+
+        // check for updates and create scheduler
+        UpdateChecker updateChecker = new UpdateChecker(this);
+        scheduler.runTaskTimerAsynchronously(this, updateChecker::check, 0, 72000);
+
         // load TimerManager and activeTimer
         timerManager = new TimerManager(this);
         activeTimer = timerManager.getActiveTimer();
@@ -53,12 +62,12 @@ public final class SimpleTimer extends JavaPlugin {
 
         // register event listeners
         getServer().getPluginManager().registerEvents(new PlayerDeathListener(), this);
+        getServer().getPluginManager().registerEvents(new PlayerJoinListener(updateChecker), this);
 
         // init timer vars
         showPauseString = true;
 
         // the timer scheduler
-        BukkitScheduler scheduler = getServer().getScheduler();
         scheduler.runTaskTimer(this, () -> {
             Collection<? extends Player> onlinePlayers = getServer().getOnlinePlayers();
 
