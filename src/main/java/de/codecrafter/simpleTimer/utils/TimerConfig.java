@@ -11,7 +11,6 @@ public class TimerConfig {
     private final SimpleTimer plugin;
 
     // config values
-    private boolean show;
     private boolean showPauseMessage;
     private String pauseMessage;
     private NamedTextColor colorRunning;
@@ -46,7 +45,6 @@ public class TimerConfig {
      * @param config The config object.
      */
     private void load(FileConfiguration config) {
-        this.show = config.getBoolean("timer.show", true);
         this.showPauseMessage = config.getBoolean("timer.show_pause_message", true);
         this.pauseMessage = config.getString("timer.pause_message", "Timer paused");
         this.colorRunning = NamedTextColor.NAMES.value(config.getString("timer.color_running", "YELLOW").toLowerCase());
@@ -55,10 +53,6 @@ public class TimerConfig {
         this.runWithoutPlayers = config.getBoolean("timer.run_without_players", false);
         this.pauseOnPlayerDeath = config.getBoolean("timer.pause_on_player_death", false);
         this.autoSelectNewTimer = config.getBoolean("timer.auto_select_new_timer", false);
-    }
-
-    public boolean isShow() {
-        return show;
     }
 
     public boolean isShowPauseMessage() {

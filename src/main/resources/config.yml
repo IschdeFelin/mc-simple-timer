@@ -1,7 +1,4 @@
 timer:
-  # Show the timer as an ActionBar message in-game
-  show: true
-
   # When the timer is paused, alternate between showing the timer value and a custom pause message
   show_pause_message: true
 

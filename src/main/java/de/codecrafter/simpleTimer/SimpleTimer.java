@@ -80,23 +80,19 @@ public final class SimpleTimer extends JavaPlugin {
                         return;
                     }
 
-                    if (timerConfig.isShow()) {
-                        onlinePlayers.forEach(player ->
-                                player.sendActionBar(Component.text(formatTime(activeTimer.getTime()))
-                                        .color(getTimerConfig().getColorRunning())));
-                    }
+                    onlinePlayers.forEach(player ->
+                            player.sendActionBar(Component.text(formatTime(activeTimer.getTime()))
+                                    .color(getTimerConfig().getColorRunning())));
                 } else {
-                    if (timerConfig.isShow()) {
-                        onlinePlayers.forEach(player -> {
-                            if (showPauseString && timerConfig.isShowPauseMessage()) {
-                                player.sendActionBar(Component.text(timerConfig.getPauseMessage())
-                                        .color(getTimerConfig().getColorPauseMessage()));
-                            } else {
-                                player.sendActionBar(Component.text(formatTime(activeTimer.getTime()))
-                                        .color(getTimerConfig().getColorPaused()));
-                            }
-                        });
-                    }
+                    onlinePlayers.forEach(player -> {
+                        if (showPauseString && timerConfig.isShowPauseMessage()) {
+                            player.sendActionBar(Component.text(timerConfig.getPauseMessage())
+                                    .color(getTimerConfig().getColorPauseMessage()));
+                        } else {
+                            player.sendActionBar(Component.text(formatTime(activeTimer.getTime()))
+                                    .color(getTimerConfig().getColorPaused()));
+                        }
+                    });
                     showPauseString = !showPauseString;
                 }
             }
