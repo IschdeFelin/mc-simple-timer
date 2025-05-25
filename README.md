@@ -7,16 +7,32 @@ supporting multiple named timers with intuitive commands and clickable in-game U
 
 ---
 
+**⚠️ Note:** This version of the plugin (v2.0.0 and above) has been completely rewritten,  
+including the documentation. For the old documentation, see here:  
+[https://github.com/IschdeFelin/mc-simple-timer/tree/main-v1](https://github.com/IschdeFelin/mc-simple-timer/blob/main-v1/README.md)
+
+---
+
 ## Features
 
 - Manage multiple timers with custom names.
 - Clickable in-game timer list with hover tooltips and command suggestions.
 - Supports pausing, resuming, resetting, saving, and reloading.
 - Configurable display with color options and pause messages.
+- Timers can run without players online and pause automatically on player death (configurable).
 
 ---
 
 ## Commands
+
+### `/timer resume`
+Resumes the current timer.
+
+### `/timer pause`
+Pauses the current timer.
+
+### `/timer reset`
+Stops and resets the current timer to 0.
 
 ### `/timer create <name>`
 Creates a new timer with the given name.
@@ -31,13 +47,16 @@ Example:
 /timer create speedrun1
 ```
 
-If successful, a clickable message will appear to select it immediately.
+If successful, a clickable message appears allowing you to select the timer immediately.
 
 ### `/timer select <name>`
 Selects the timer with the given name and pauses it by default.
 
 ### `/timer name`
 Shows the name of the currently selected timer.
+
+### `/timer state <name>`
+Shows the current state (time) of the specified timer or the active timer if no name is given.
 
 ### `/timer list`
 Lists all available timers with their current times.
@@ -47,7 +66,7 @@ Each entry is:
 - **Hoverable:** shows "Click to select"
 
 Example output:
-```
+```plaintext
 These timers exist:
 - speedrun1 (0s)
 - bossfight (1h 23m 51s)
@@ -61,17 +80,10 @@ Example:
 /timer set 300
 ```
 
-### `/timer pause`
-Pauses the current timer.
 
-### `/timer resume`
-Resumes the current timer.
-
-### `/timer reset`
-Stops and resets the current timer to 0.
 
 ### `/timer remove <name>`
-Removes the specified timer.
+Removes the specified timer. If no name is given, removes the current timer.
 If the currently active timer is removed, no timer remains selected.
 
 ### `/timer reload`
@@ -100,14 +112,16 @@ Located at:
 
 ### Options
 
-| Option            | Description                                                 |
-|-------------------|-------------------------------------------------------------|
-| show              | Show timer as ActionBar? (`true`/`false`)                   |
-| showPauseMessage	 | Show a custom message while paused (alternating with time)? |
-| pauseMessage      | The message to display when paused.                         |
-| colorRunning      | Timer color when running (YELLOW, WHITE, etc.)              |
-| colorPaused       | Timer value color when paused.                              |
-| colorPauseMessage | Color of the pause message.                                 |
+| Option                | Description                                                        | Default          |
+|-----------------------|--------------------------------------------------------------------|------------------|
+| showPauseMessage	     | Show a custom message while paused (alternating with time)?        | `true`           |
+| pauseMessage          | The message to display when the timer is paused.                   | `"Timer paused"` |
+| colorRunning          | Timer color when running (`YELLOW`, `WHITE`, etc.)                 | `"YELLOW"`       |
+| colorPaused           | Timer value color when paused.                                     | `"GOLD"`         |
+| colorPauseMessage     | Color of the pause message.                                        | `"GOLD"`         |
+| run_without_players   | If `true`, timer continues running even when no players are online | `false`          |
+| pause_on_player_death | If `true`, timer pauses automatically when a player dies           | `false`          |
+| auto_select_new_timer | Automatically select the newly created timer                       | `false`          |
 
 ### Available Colors
 
