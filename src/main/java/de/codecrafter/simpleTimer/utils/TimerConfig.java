@@ -17,6 +17,7 @@ public class TimerConfig {
     private NamedTextColor colorRunning;
     private NamedTextColor colorPaused;
     private NamedTextColor colorPauseMessage;
+    private boolean runWithoutPlayers;
 
     /**
      * Creates an instance of {@code TimerConfig} class.
@@ -49,6 +50,7 @@ public class TimerConfig {
         this.colorRunning = NamedTextColor.NAMES.value(config.getString("timer.color_running", "YELLOW").toLowerCase());
         this.colorPaused = NamedTextColor.NAMES.value(config.getString("timer.color_paused", "GOLD").toLowerCase());
         this.colorPauseMessage = NamedTextColor.NAMES.value(config.getString("timer.color_pause_message", "GOLD").toLowerCase());
+        this.runWithoutPlayers = config.getBoolean("timer.run_without_players", false);
     }
 
     public boolean isShow() {
@@ -73,5 +75,9 @@ public class TimerConfig {
 
     public NamedTextColor getColorPauseMessage() {
         return colorPauseMessage;
+    }
+
+    public boolean isRunWithoutPlayers() {
+        return runWithoutPlayers;
     }
 }

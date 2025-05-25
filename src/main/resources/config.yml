@@ -16,3 +16,6 @@ timer:
 
   # Text color of the pause message
   color_pause_message: "GOLD"
+
+  # If true, the timer will continue running even when no players are online
+  run_without_players: false

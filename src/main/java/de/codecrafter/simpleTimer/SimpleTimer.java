@@ -53,8 +53,8 @@ public final class SimpleTimer extends JavaPlugin {
         // the timer scheduler
         BukkitScheduler scheduler = getServer().getScheduler();
         scheduler.runTaskTimer(this, () -> {
-            // only when players are online
-            if (!getServer().getOnlinePlayers().isEmpty()) {
+            // only when players are online or runWithoutPlayers == true
+            if (!getServer().getOnlinePlayers().isEmpty() || getTimerConfig().isRunWithoutPlayers()) {
                 if (activeTimer == null) {
                     getServer().getOnlinePlayers().forEach(player -> {
                         player.sendActionBar(Component.text("No timer selected")
