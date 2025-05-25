@@ -1,5 +1,7 @@
 package de.codecrafter.simpleTimer.models;
 
+import de.codecrafter.simpleTimer.SimpleTimer;
+
 /**
  * A timer instance which stores {@code name}, {@code time} and {@code running} states.
  */
@@ -37,8 +39,14 @@ public class Timer {
         this.time = time;
     }
 
-    public void addTime() {
-        this.time++;
+    public boolean addTime() {
+        if (time < Long.MAX_VALUE) {
+            this.time++;
+            return true;
+        } else {
+            SimpleTimer.getPlugin().getComponentLogger().error("Timer reached maximum duration!");
+            return false;
+        }
     }
 
     public boolean isRunning() {

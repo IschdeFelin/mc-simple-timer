@@ -7,8 +7,11 @@ import de.codecrafter.simpleTimer.utils.TimerConfig;
 import de.codecrafter.simpleTimer.utils.TimerManager;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
+import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitScheduler;
+
+import java.util.Collection;
 
 import static de.codecrafter.simpleTimer.utils.Formatter.formatTime;
 
@@ -57,28 +60,34 @@ public final class SimpleTimer extends JavaPlugin {
         // the timer scheduler
         BukkitScheduler scheduler = getServer().getScheduler();
         scheduler.runTaskTimer(this, () -> {
+            Collection<? extends Player> onlinePlayers = getServer().getOnlinePlayers();
+
             // only when players are online or runWithoutPlayers == true
-            if (!getServer().getOnlinePlayers().isEmpty() || getTimerConfig().isRunWithoutPlayers()) {
+            if (!onlinePlayers.isEmpty() || getTimerConfig().isRunWithoutPlayers()) {
                 if (activeTimer == null) {
-                    getServer().getOnlinePlayers().forEach(player -> {
-                        player.sendActionBar(Component.text("No timer selected")
-                                .color(NamedTextColor.RED));
-                    });
+                    onlinePlayers.forEach(player ->
+                            player.sendActionBar(Component.text("No timer selected")
+                            .color(NamedTextColor.RED)));
                     return;
                 }
 
                 if (activeTimer.isRunning()) {
-                    activeTimer.addTime();
+                    if (!activeTimer.addTime()) {
+                        activeTimer.setRunning(false);
+                        onlinePlayers.forEach(player ->
+                                player.sendMessage(Component.text("Timer reached maximum duration!")
+                                        .color(NamedTextColor.RED)));
+                        return;
+                    }
 
                     if (timerConfig.isShow()) {
-                        getServer().getOnlinePlayers().forEach(player -> {
-                            player.sendActionBar(Component.text(formatTime(activeTimer.getTime()))
-                                    .color(getTimerConfig().getColorRunning()));
-                        });
+                        onlinePlayers.forEach(player ->
+                                player.sendActionBar(Component.text(formatTime(activeTimer.getTime()))
+                                        .color(getTimerConfig().getColorRunning())));
                     }
                 } else {
                     if (timerConfig.isShow()) {
-                        getServer().getOnlinePlayers().forEach(player -> {
+                        onlinePlayers.forEach(player -> {
                             if (showPauseString && timerConfig.isShowPauseMessage()) {
                                 player.sendActionBar(Component.text(timerConfig.getPauseMessage())
                                         .color(getTimerConfig().getColorPauseMessage()));
