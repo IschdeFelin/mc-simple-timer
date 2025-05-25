@@ -21,180 +21,192 @@ public class TimerCommand implements TabExecutor {
     @Override
     public boolean onCommand(@NotNull CommandSender commandSender, @NotNull Command command, @NotNull String s, @NotNull String @NotNull [] strings) {
         if (!(commandSender instanceof Player)) {
-            commandSender.sendMessage("This command can only be used by players.");
+            commandSender.sendMessage("This command can only be executed by players.");
+            return true;
+        }
+
+
+        if (strings.length == 0) {
+            commandSender.sendMessage("Usage: /timer <pause|resume|reset|reload|save|name|list|set|select|remove|create|state> [seconds|timer_name]");
             return true;
         }
 
         SimpleTimer simpleTimer = SimpleTimer.getPlugin();
-        if (strings.length == 1) {
-            switch (strings[0].toLowerCase()) {
-                case "pause" -> {
-                    Timer timer = getActiveTimerOrWarn(simpleTimer, commandSender);
-                    if (timer == null) return true;
+        switch (strings[0].toLowerCase()) {
+            case "pause" -> {
+                Timer timer = getActiveTimerOrWarn(simpleTimer, commandSender);
+                if (timer == null) return true;
 
-                    timer.setRunning(false);
-                    return true;
-                }
-                case "resume" -> {
-                    Timer timer = getActiveTimerOrWarn(simpleTimer, commandSender);
-                    if (timer == null) return true;
-
-                    timer.setRunning(true);
-                    return true;
-                }
-                case "reset" -> {
-                    Timer timer = getActiveTimerOrWarn(simpleTimer, commandSender);
-                    if (timer == null) return true;
-
-                    timer.setRunning(false);
-                    timer.setTime(0L);
-                    return true;
-                }
-                case "reload" -> {
-                    simpleTimer.getTimerConfig().reload();
-                    commandSender.sendMessage("Configuration reloaded.");
-                    return true;
-                }
-                case "save" -> {
-                    simpleTimer.getTimerManager().saveToFile();
-                    commandSender.sendMessage("Timers saved.");
-                    return true;
-                }
-                case "list" -> {
-                    List<Timer> allTimers = simpleTimer.getTimerManager().getAllTimers();
-
-                    if (allTimers.isEmpty()) {
-                        commandSender.sendMessage("There are no timers.");
-                        return true;
-                    }
-
-                    allTimers.sort(Comparator.comparing(Timer::getName));
-                    Component timersFormatted = Component.join(
-                            JoinConfiguration.newlines(),
-                            allTimers.stream().map(timer ->
-                                    Component.text("- " + timer.getName() + " (" + formatTime(timer.getTime()) + ")")
-                                            .hoverEvent(HoverEvent.showText(Component.text("Click to select")))
-                                            .clickEvent(ClickEvent.suggestCommand("/timer select " + timer.getName()))
-                            ).toList()
-                    );
-
-                    commandSender.sendMessage(Component.text("These timers exist:")
-                            .append(Component.newline())
-                            .append(timersFormatted));
-                    return true;
-                }
-                case "name" -> {
-                    Timer timer = getActiveTimerOrWarn(simpleTimer, commandSender);
-                    if (timer == null) return true;
-
-                    commandSender.sendMessage("The current timer is: " + timer.getName());
-                    return true;
-                }
-                case "state" -> {
-                    Timer timer = getActiveTimerOrWarn(simpleTimer, commandSender);
-                    if (timer == null) return true;
-
-                    commandSender.sendMessage("State of timer " + timer.getName() + ": " + formatTime(timer.getTime()));
-                    return true;
-                }
-                case "remove" -> {
-                    Timer timer = getActiveTimerOrWarn(simpleTimer, commandSender);
-                    if (timer == null) return true;
-
-                    simpleTimer.getTimerManager().removeTimer(timer);
-                    if (Objects.equals(simpleTimer.getActiveTimer().getName(), timer.getName())) {
-                        simpleTimer.setActiveTimer(null);
-                    }
-                    commandSender.sendMessage("Removed timer: " + timer.getName());
-                    return true;
-                }
+                timer.setRunning(false);
+                return true;
             }
-        } else if (strings.length == 2) {
-            switch (strings[0].toLowerCase()) {
-                case "set" -> {
-                    Timer timer = getActiveTimerOrWarn(simpleTimer, commandSender);
-                    if (timer == null) return true;
-                    timer.setRunning(false);
+            case "resume" -> {
+                Timer timer = getActiveTimerOrWarn(simpleTimer, commandSender);
+                if (timer == null) return true;
 
-                    try {
-                        long newState = Long.parseLong(strings[1]);
+                timer.setRunning(true);
+                return true;
+            }
+            case "reset" -> {
+                Timer timer = getActiveTimerOrWarn(simpleTimer, commandSender);
+                if (timer == null) return true;
 
-                        if (newState <= 0) {
-                            commandSender.sendMessage("New time must be greater than 0.");
-                        }
+                timer.setRunning(false);
+                timer.setTime(0L);
+                return true;
+            }
+            case "reload" -> {
+                simpleTimer.getTimerConfig().reload();
+                commandSender.sendMessage("Configuration reloaded successfully.");
+                return true;
+            }
+            case "save" -> {
+                simpleTimer.getTimerManager().saveToFile();
+                commandSender.sendMessage("All timers have been saved.");
+                return true;
+            }
+            case "list" -> {
+                List<Timer> allTimers = simpleTimer.getTimerManager().getAllTimers();
 
-                        timer.setTime(newState);
-                    } catch (Exception e) {
-                        commandSender.sendMessage("Please enter a valid number for the time.");
-                    }
-
+                if (allTimers.isEmpty()) {
+                    commandSender.sendMessage("There are no timers.");
                     return true;
                 }
-                case "select" -> {
-                    Timer timer = getTimerOrWarn(simpleTimer, commandSender, strings[1]);
-                    if (timer == null) return true;
 
-                    simpleTimer.setActiveTimer(timer);
-                    simpleTimer.getActiveTimer().setRunning(false);
-                    commandSender.sendMessage("Selected timer: " + timer.getName());
+                allTimers.sort(Comparator.comparing(Timer::getName));
+                Component timersFormatted = Component.join(
+                        JoinConfiguration.newlines(),
+                        allTimers.stream().map(timer ->
+                                Component.text("- ")
+                                        .append(Component.text(timer.getName() + " (" + formatTime(timer.getTime()) + ")")
+                                        .hoverEvent(HoverEvent.showText(Component.text("Click to select")))
+                                        .clickEvent(ClickEvent.suggestCommand("/timer select " + timer.getName())))
+                        ).toList()
+                );
+
+                commandSender.sendMessage(Component.text("Existing timers:")
+                        .append(Component.newline())
+                        .append(timersFormatted));
+                return true;
+            }
+            case "name" -> {
+                Timer timer = getActiveTimerOrWarn(simpleTimer, commandSender);
+                if (timer == null) return true;
+
+                commandSender.sendMessage("The active timer is: " + timer.getName());
+                return true;
+            }
+            case "state" -> {
+                Timer timer;
+                if (strings.length == 1) {
+                    timer = getActiveTimerOrWarn(simpleTimer, commandSender);
+                } else {
+                    timer = getTimerOrWarn(simpleTimer, commandSender, strings[1]);
+                }
+                if (timer == null) return true;
+
+                commandSender.sendMessage("State of timer \"" + timer.getName() + "\" is: " + formatTime(timer.getTime()));
+                return true;
+            }
+            case "remove" -> {
+                Timer timer;
+                if (strings.length == 1) {
+                    timer = getActiveTimerOrWarn(simpleTimer, commandSender);
+                } else {
+                    timer = getTimerOrWarn(simpleTimer, commandSender, strings[1]);
+                }
+                if (timer == null) return true;
+
+                simpleTimer.getTimerManager().removeTimer(timer);
+                Timer activeTimer = simpleTimer.getActiveTimer();
+                if (!(activeTimer == null) && activeTimer.getName().equals(timer.getName())) {
+                    simpleTimer.setActiveTimer(null);
+                }
+                commandSender.sendMessage("Removed timer: " + timer.getName());
+                return true;
+            }
+            case "set" -> {
+                if (strings.length < 2) {
+                    commandSender.sendMessage("Usage: /timer set <seconds>");
                     return true;
                 }
-                case "remove" -> {
-                    Timer timer = getTimerOrWarn(simpleTimer, commandSender, strings[1]);
-                    if (timer == null) return true;
 
-                    simpleTimer.getTimerManager().removeTimer(timer);
-                    if (Objects.equals(simpleTimer.getActiveTimer().getName(), timer.getName())) {
-                        simpleTimer.setActiveTimer(null);
+                Timer timer = getActiveTimerOrWarn(simpleTimer, commandSender);
+                if (timer == null) return true;
+                timer.setRunning(false);
+
+                try {
+                    long newState = Long.parseLong(strings[1]);
+
+                    if (newState <= 0) {
+                        commandSender.sendMessage("The time must be greater than 0 seconds.");
                     }
-                    commandSender.sendMessage("Removed timer: " + timer.getName());
+
+                    timer.setTime(newState);
+                } catch (Exception e) {
+                    commandSender.sendMessage("Please enter a valid number for the time.");
+                }
+
+                commandSender.sendMessage("Timer updated to " + timer.getTime() + " seconds.");
+                return true;
+            }
+            case "select" -> {
+                if (strings.length < 2) {
+                    commandSender.sendMessage("Usage: /timer select <name>");
                     return true;
                 }
-                case "create" -> {
-                    String timerName = strings[1].trim();
 
-                    if (timerName.isEmpty()) {
-                        commandSender.sendMessage("The timer name is not allowed to be empty.");
-                        return true;
-                    }
-                    if (timerName.length() > 20) {
-                        commandSender.sendMessage("The name can only contain up to 20 characters.");
-                        return true;
-                    }
-                    if (!timerName.matches("[a-zA-Z0-9_-]+")) {
-                        commandSender.sendMessage("The name can only contain letters, numbers, underscores, and dashes.");
-                        return true;
-                    }
-                    if (simpleTimer.getTimerManager().getTimer(timerName) != null) {
-                        commandSender.sendMessage("A timer with this name already exists.");
-                        return true;
-                    }
+                Timer timer = getTimerOrWarn(simpleTimer, commandSender, strings[1]);
+                if (timer == null) return true;
 
-                    Timer newTimer = new Timer(timerName, 0L, false);
-                    simpleTimer.getTimerManager().addTimer(newTimer);
-
-                    if (simpleTimer.getTimerConfig().isAutoSelectNewTimer()) {
-                        simpleTimer.setActiveTimer(newTimer);
-                        commandSender.sendMessage("Created an selected new timer: " + newTimer.getName());
-                        return true;
-                    }
-
-                    commandSender.sendMessage(Component.text("Added timer: " + newTimer.getName())
-                            .hoverEvent(HoverEvent.showText(Component.text("Click to select")))
-                            .clickEvent(ClickEvent.suggestCommand("/timer select " + newTimer.getName())));
+                simpleTimer.setActiveTimer(timer);
+                simpleTimer.getActiveTimer().setRunning(false);
+                commandSender.sendMessage("Selected timer: " + timer.getName());
+                return true;
+            }
+            case "create" -> {
+                if (strings.length < 2) {
+                    commandSender.sendMessage("Usage: /timer create <name>");
                     return true;
                 }
-                case "state" -> {
-                    Timer timer = getTimerOrWarn(simpleTimer, commandSender, strings[1]);
-                    if (timer == null) return true;
 
-                    commandSender.sendMessage("State of timer " + timer.getName() + ": " + formatTime(timer.getTime()));
+                String timerName = strings[1].trim();
+
+                if (timerName.isEmpty()) {
+                    commandSender.sendMessage("Timer name cannot be empty.");
                     return true;
                 }
+                if (timerName.length() > 20) {
+                    commandSender.sendMessage("Timer name must not exceed 20 characters.");
+                    return true;
+                }
+                if (!timerName.matches("[a-zA-Z0-9_-]+")) {
+                    commandSender.sendMessage("Only letters, numbers, underscores (_) and dashes (-) are allowed.");
+                    return true;
+                }
+                if (simpleTimer.getTimerManager().getTimer(timerName) != null) {
+                    commandSender.sendMessage("A timer with that name already exists.");
+                    return true;
+                }
+
+                Timer newTimer = new Timer(timerName, 0L, false);
+                simpleTimer.getTimerManager().addTimer(newTimer);
+
+                if (simpleTimer.getTimerConfig().isAutoSelectNewTimer()) {
+                    simpleTimer.setActiveTimer(newTimer);
+                    commandSender.sendMessage("Created and selected new timer: " + newTimer.getName());
+                    return true;
+                }
+
+                commandSender.sendMessage(Component.text("Created timer: ")
+                        .append(Component.text(newTimer.getName())
+                                .hoverEvent(HoverEvent.showText(Component.text("Click to select")))
+                                .clickEvent(ClickEvent.suggestCommand("/timer select " + newTimer.getName()))));
+                return true;
             }
         }
 
-        commandSender.sendMessage("Usage: /timer <pause|resume|reset|reload|save|name|list|set|select|remove|create|state> [time_in_seconds|timer_name]");
+        commandSender.sendMessage("Usage: /timer <pause|resume|reset|reload|save|name|list|set|select|remove|create|state> [seconds|timer_name]");
         return true;
     }
 
