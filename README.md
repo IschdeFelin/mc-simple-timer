@@ -114,11 +114,11 @@ Located at:
 
 | Option                | Description                                                        | Default          |
 |-----------------------|--------------------------------------------------------------------|------------------|
-| showPauseMessage	     | Show a custom message while paused (alternating with time)?        | `true`           |
-| pauseMessage          | The message to display when the timer is paused.                   | `"Timer paused"` |
-| colorRunning          | Timer color when running (`YELLOW`, `WHITE`, etc.)                 | `"YELLOW"`       |
-| colorPaused           | Timer value color when paused.                                     | `"GOLD"`         |
-| colorPauseMessage     | Color of the pause message.                                        | `"GOLD"`         |
+| show_pause_message	   | Show a custom message while paused (alternating with time)?        | `true`           |
+| pause_message         | The message to display when the timer is paused.                   | `"Timer paused"` |
+| color_running         | Timer color when running (`YELLOW`, `WHITE`, etc.)                 | `"YELLOW"`       |
+| color_paused          | Timer value color when paused.                                     | `"GOLD"`         |
+| color_pause_message   | Color of the pause message.                                        | `"GOLD"`         |
 | run_without_players   | If `true`, timer continues running even when no players are online | `false`          |
 | pause_on_player_death | If `true`, timer pauses automatically when a player dies           | `false`          |
 | auto_select_new_timer | Automatically select the newly created timer                       | `false`          |
