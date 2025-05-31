@@ -151,7 +151,7 @@ public class TimerCommand implements TabExecutor {
                     commandSender.sendMessage(e.getMessage());
                 }
 
-                commandSender.sendMessage("Timer updated to " + timer.getTime() + " seconds.");
+                commandSender.sendMessage("Timer set to " + formatTime(timer.getTime()) + " seconds.");
                 return true;
             }
             case "select" -> {
