@@ -80,7 +80,21 @@ Example:
 /timer set 300
 ```
 
+### `/timer add <seconds>`
+Adds the given time to the current timer.
 
+Example:
+```bash
+/timer add 300
+```
+
+### `/timer subtract <seconds>`
+Subtracts the given time from the current timer.
+
+Example:
+```bash
+/timer subtract 300
+```
 
 ### `/timer remove <name>`
 Removes the specified timer. If no name is given, removes the current timer.

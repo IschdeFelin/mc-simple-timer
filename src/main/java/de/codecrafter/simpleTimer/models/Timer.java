@@ -49,6 +49,24 @@ public class Timer {
         }
     }
 
+    public boolean addTime(long time) {
+        try {
+            this.time = Math.addExact(this.time, time);
+            return true;
+        } catch (ArithmeticException e) {
+            return false;
+        }
+    }
+
+    public boolean subtractTime(long time) {
+        if (this.time < time) {
+            return false;
+        }
+
+        this.time = this.time - time;
+        return true;
+    }
+
     public boolean isRunning() {
         return running;
     }

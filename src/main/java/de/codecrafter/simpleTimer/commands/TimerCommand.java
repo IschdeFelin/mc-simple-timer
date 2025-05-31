@@ -13,7 +13,8 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.*;
+import java.util.Comparator;
+import java.util.List;
 
 import static de.codecrafter.simpleTimer.utils.Formatter.formatTime;
 
@@ -204,6 +205,64 @@ public class TimerCommand implements TabExecutor {
                                 .clickEvent(ClickEvent.suggestCommand("/timer select " + newTimer.getName()))));
                 return true;
             }
+            case "add" -> {
+                if (strings.length < 2) {
+                    commandSender.sendMessage("Usage: /timer add <seconds>");
+                    return true;
+                }
+
+                Timer timer = getActiveTimerOrWarn(simpleTimer, commandSender);
+                if (timer == null) return true;
+                timer.setRunning(false);
+
+                try {
+                    long addState = Long.parseLong(strings[1]);
+
+                    if (addState <= 0) {
+                        commandSender.sendMessage("The time must be greater than 0 seconds.");
+                    }
+
+                     if (!timer.addTime(addState)) {
+                         commandSender.sendMessage("Unable to add time: the value is too large and would cause an overflow.");
+                         return true;
+                     }
+
+                    commandSender.sendMessage("Timer increased by " + formatTime(addState) + ". Current time: " + formatTime(timer.getTime()));
+                } catch (Exception e) {
+                    commandSender.sendMessage("Please enter a valid number for the time.");
+                }
+
+                return true;
+            }
+            case "subtract" -> {
+                if (strings.length < 2) {
+                    commandSender.sendMessage("Usage: /timer subtract <seconds>");
+                    return true;
+                }
+
+                Timer timer = getActiveTimerOrWarn(simpleTimer, commandSender);
+                if (timer == null) return true;
+                timer.setRunning(false);
+
+                try {
+                    long subtractState = Long.parseLong(strings[1]);
+
+                    if (subtractState <= 0) {
+                        commandSender.sendMessage("The time must be greater than 0 seconds.");
+                    }
+
+                    if (!timer.subtractTime(subtractState)) {
+                        commandSender.sendMessage("Unable to subtract time: the value is too large and would cause a negative result.");
+                        return true;
+                    }
+
+                    commandSender.sendMessage("Timer decreased by " + formatTime(subtractState) + ". Current time: " + formatTime(timer.getTime()));
+                } catch (Exception e) {
+                    commandSender.sendMessage("Please enter a valid number for the time.");
+                }
+
+                return true;
+            }
         }
 
         commandSender.sendMessage("Usage: /timer <pause|resume|reset|reload|save|name|list|set|select|remove|create|state> [seconds|timer_name]");
@@ -212,7 +271,7 @@ public class TimerCommand implements TabExecutor {
 
     @Override
     public @Nullable List<String> onTabComplete(@NotNull CommandSender commandSender, @NotNull Command command, @NotNull String s, @NotNull String @NotNull [] strings) {
-        List<String> options = List.of("pause", "resume", "reset", "reload", "save", "list", "set", "select", "remove", "name", "create", "state");
+        List<String> options = List.of("pause", "resume", "reset", "reload", "save", "list", "set", "select", "remove", "name", "create", "state", "add", "subtract");
 
         if (strings.length == 1) {
             return options.stream()
