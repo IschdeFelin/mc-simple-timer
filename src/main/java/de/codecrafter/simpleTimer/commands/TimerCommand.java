@@ -17,8 +17,11 @@ import java.util.Comparator;
 import java.util.List;
 
 import static de.codecrafter.simpleTimer.utils.Formatter.formatTime;
+import static de.codecrafter.simpleTimer.utils.Formatter.parseTime;
 
 public class TimerCommand implements TabExecutor {
+    private final static String usageString = "Usage: /timer <pause|resume|reset|reload|save|name|list|set|select|remove|create|state|add|subtract> [seconds|timer_name]";
+
     @Override
     public boolean onCommand(@NotNull CommandSender commandSender, @NotNull Command command, @NotNull String s, @NotNull String @NotNull [] strings) {
         if (!(commandSender instanceof Player)) {
@@ -28,7 +31,7 @@ public class TimerCommand implements TabExecutor {
 
 
         if (strings.length == 0) {
-            commandSender.sendMessage("Usage: /timer <pause|resume|reset|reload|save|name|list|set|select|remove|create|state> [seconds|timer_name]");
+            commandSender.sendMessage(usageString);
             return true;
         }
 
@@ -137,15 +140,15 @@ public class TimerCommand implements TabExecutor {
                 timer.setRunning(false);
 
                 try {
-                    long newState = Long.parseLong(strings[1]);
+                    long newState = parseTime(strings[1]);
 
                     if (newState <= 0) {
                         commandSender.sendMessage("The time must be greater than 0 seconds.");
                     }
 
                     timer.setTime(newState);
-                } catch (Exception e) {
-                    commandSender.sendMessage("Please enter a valid number for the time.");
+                } catch (IllegalArgumentException e) {
+                    commandSender.sendMessage(e.getMessage());
                 }
 
                 commandSender.sendMessage("Timer updated to " + timer.getTime() + " seconds.");
@@ -216,10 +219,11 @@ public class TimerCommand implements TabExecutor {
                 timer.setRunning(false);
 
                 try {
-                    long addState = Long.parseLong(strings[1]);
+                    long addState = parseTime(strings[1]);
 
                     if (addState <= 0) {
                         commandSender.sendMessage("The time must be greater than 0 seconds.");
+                        return true;
                     }
 
                      if (!timer.addTime(addState)) {
@@ -228,8 +232,8 @@ public class TimerCommand implements TabExecutor {
                      }
 
                     commandSender.sendMessage("Timer increased by " + formatTime(addState) + ". Current time: " + formatTime(timer.getTime()));
-                } catch (Exception e) {
-                    commandSender.sendMessage("Please enter a valid number for the time.");
+                } catch (IllegalArgumentException e) {
+                    commandSender.sendMessage(e.getMessage());
                 }
 
                 return true;
@@ -245,10 +249,11 @@ public class TimerCommand implements TabExecutor {
                 timer.setRunning(false);
 
                 try {
-                    long subtractState = Long.parseLong(strings[1]);
+                    long subtractState = parseTime(strings[1]);
 
                     if (subtractState <= 0) {
                         commandSender.sendMessage("The time must be greater than 0 seconds.");
+                        return true;
                     }
 
                     if (!timer.subtractTime(subtractState)) {
@@ -257,15 +262,15 @@ public class TimerCommand implements TabExecutor {
                     }
 
                     commandSender.sendMessage("Timer decreased by " + formatTime(subtractState) + ". Current time: " + formatTime(timer.getTime()));
-                } catch (Exception e) {
-                    commandSender.sendMessage("Please enter a valid number for the time.");
+                } catch (IllegalArgumentException e) {
+                    commandSender.sendMessage(e.getMessage());
                 }
 
                 return true;
             }
         }
 
-        commandSender.sendMessage("Usage: /timer <pause|resume|reset|reload|save|name|list|set|select|remove|create|state> [seconds|timer_name]");
+        commandSender.sendMessage(usageString);
         return true;
     }
 

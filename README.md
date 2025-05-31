@@ -72,28 +72,38 @@ These timers exist:
 - bossfight (1h 23m 51s)
 ```
 
-### `/timer set <seconds>`
-Sets the current timer to a specific time (in seconds).
+### `/timer set <time>`
+Sets the current timer to a specific time.
+
+The `<time>` argument can be either a simple number of seconds (e.g. `300`)
+or a more detailed format combining days, hours, minutes, and seconds, e.g.:
+`13d2s`, `78m12s`, `15h7s`, `12h`, `465s`, `484`
 
 Example:
 ```bash
-/timer set 300
+/timer set 1d3h17m12s
 ```
 
-### `/timer add <seconds>`
+### `/timer add <time>`
 Adds the given time to the current timer.
 
+The `<time>` argument accepts the same formats as `/timer set`, for example:
+`300`, `78m12s`, `15h7s`, `13d2s`, `465s`
+
 Example:
 ```bash
-/timer add 300
+/timer add 1h30m
 ```
 
-### `/timer subtract <seconds>`
+### `/timer subtract <time>`
 Subtracts the given time from the current timer.
+
+The `<time>` argument accepts the same formats as `/timer set`, for example:
+`300`, `78m12s`, `15h7s`, `13d2s`, `465s`
 
 Example:
 ```bash
-/timer subtract 300
+/timer subtract 45m20s
 ```
 
 ### `/timer remove <name>`
