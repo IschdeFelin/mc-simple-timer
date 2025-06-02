@@ -21,7 +21,7 @@ import static de.codecrafter.simpleTimer.utils.Formatter.formatTime;
 import static de.codecrafter.simpleTimer.utils.Formatter.parseTime;
 
 public class TimerCommand implements TabExecutor {
-    private final static String usageString = "Usage: /timer <pause|resume|reset|reload|save|name|list|set|select|remove|create|state|add|subtract> [seconds|timer_name]";
+    private final static String usageString = "Usage: /timer <pause|resume|reset|reload|save|name|list|set|select|remove|create|state|add|subtract> [time|timer_name]";
 
     @Override
     public boolean onCommand(@NotNull CommandSender commandSender, @NotNull Command command, @NotNull String s, @NotNull String @NotNull [] strings) {
