@@ -13,6 +13,7 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 
@@ -140,7 +141,8 @@ public class TimerCommand implements TabExecutor {
                 timer.setRunning(false);
 
                 try {
-                    long newState = parseTime(strings[1]);
+                    String joinedArgs = String.join("", Arrays.copyOfRange(strings, 1, strings.length)).replaceAll("\\s+", "");
+                    long newState = parseTime(joinedArgs);
 
                     if (newState <= 0) {
                         commandSender.sendMessage("The time must be greater than 0 seconds.");
@@ -219,7 +221,8 @@ public class TimerCommand implements TabExecutor {
                 timer.setRunning(false);
 
                 try {
-                    long addState = parseTime(strings[1]);
+                    String joinedArgs = String.join("", Arrays.copyOfRange(strings, 1, strings.length)).replaceAll("\\s+", "");
+                    long addState = parseTime(joinedArgs);
 
                     if (addState <= 0) {
                         commandSender.sendMessage("The time must be greater than 0 seconds.");
@@ -249,7 +252,8 @@ public class TimerCommand implements TabExecutor {
                 timer.setRunning(false);
 
                 try {
-                    long subtractState = parseTime(strings[1]);
+                    String joinedArgs = String.join("", Arrays.copyOfRange(strings, 1, strings.length)).replaceAll("\\s+", "");
+                    long subtractState = parseTime(joinedArgs);
 
                     if (subtractState <= 0) {
                         commandSender.sendMessage("The time must be greater than 0 seconds.");
