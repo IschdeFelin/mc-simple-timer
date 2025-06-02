@@ -1,3 +1,8 @@
+/*
+ * This file is part of the Minecraft Simple Timer project.
+ * Licensed under the MIT License. See the LICENSE file in the project root for full license information.
+ */
+
 package de.codecrafter.simpleTimer.utils;
 
 import de.codecrafter.simpleTimer.SimpleTimer;
@@ -6,7 +11,10 @@ import org.bukkit.configuration.file.YamlConfiguration;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Provides the management of all created timers. The timers are saved in the {@code timers.yml} file.
