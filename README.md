@@ -55,6 +55,9 @@ Selects the timer with the given name and pauses it by default.
 ### `/timer name`
 Shows the name of the currently selected timer.
 
+### `/timer rename <name>`
+Renames the current timer to the specified name. The same naming rules apply as for `/timer create <name>`.
+
 ### `/timer state <name>`
 Shows the current state (time) of the specified timer or the active timer if no name is given.
 

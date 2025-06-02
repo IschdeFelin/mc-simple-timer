@@ -21,7 +21,7 @@ import static de.codecrafter.simpleTimer.utils.Formatter.formatTime;
 import static de.codecrafter.simpleTimer.utils.Formatter.parseTime;
 
 public class TimerCommand implements TabExecutor {
-    private final static String usageString = "Usage: /timer <pause|resume|reset|reload|save|name|list|set|select|remove|create|state|add|subtract> [time|timer_name]";
+    private final static String usageString = "Usage: /timer <pause|resume|reset|reload|save|name|list|set|select|remove|create|rename|state|add|subtract> [time|timer_name]";
 
     @Override
     public boolean onCommand(@NotNull CommandSender commandSender, @NotNull Command command, @NotNull String s, @NotNull String @NotNull [] strings) {
@@ -178,22 +178,7 @@ public class TimerCommand implements TabExecutor {
 
                 String timerName = strings[1].trim();
 
-                if (timerName.isEmpty()) {
-                    commandSender.sendMessage("Timer name cannot be empty.");
-                    return true;
-                }
-                if (timerName.length() > 20) {
-                    commandSender.sendMessage("Timer name must not exceed 20 characters.");
-                    return true;
-                }
-                if (!timerName.matches("[a-zA-Z0-9_-]+")) {
-                    commandSender.sendMessage("Only letters, numbers, underscores (_) and dashes (-) are allowed.");
-                    return true;
-                }
-                if (simpleTimer.getTimerManager().getTimer(timerName) != null) {
-                    commandSender.sendMessage("A timer with that name already exists.");
-                    return true;
-                }
+                if (!isValidTimerNameOrWarn(simpleTimer, commandSender, timerName)) return true;
 
                 Timer newTimer = new Timer(timerName, 0L, false);
                 simpleTimer.getTimerManager().addTimer(newTimer);
@@ -272,6 +257,29 @@ public class TimerCommand implements TabExecutor {
 
                 return true;
             }
+            case "rename" -> {
+                if (strings.length < 2) {
+                    commandSender.sendMessage("Usage: /timer rename <name>");
+                    return true;
+                }
+
+                Timer timer = getActiveTimerOrWarn(simpleTimer, commandSender);
+                if (timer == null) return true;
+                timer.setRunning(false);
+
+                String oldTimerName = timer.getName();
+                String timerName = strings[1].trim();
+
+                if (!isValidTimerNameOrWarn(simpleTimer, commandSender, timerName)) return true;
+
+                simpleTimer.getTimerManager().removeTimer(timer);
+                timer.setName(timerName);
+                simpleTimer.getTimerManager().addTimer(timer);
+                simpleTimer.setActiveTimer(timer);
+
+                commandSender.sendMessage(Component.text("Renamed timer \"" + oldTimerName + "\" to \"" + timer.getName() + "\"."));
+                return true;
+            }
         }
 
         commandSender.sendMessage(usageString);
@@ -280,7 +288,7 @@ public class TimerCommand implements TabExecutor {
 
     @Override
     public @Nullable List<String> onTabComplete(@NotNull CommandSender commandSender, @NotNull Command command, @NotNull String s, @NotNull String @NotNull [] strings) {
-        List<String> options = List.of("pause", "resume", "reset", "reload", "save", "list", "set", "select", "remove", "name", "create", "state", "add", "subtract");
+        List<String> options = List.of("pause", "resume", "reset", "reload", "save", "list", "set", "select", "remove", "name", "create", "state", "add", "subtract", "rename");
 
         if (strings.length == 1) {
             return options.stream()
@@ -313,5 +321,26 @@ public class TimerCommand implements TabExecutor {
         }
 
         return timer;
+    }
+
+    private boolean isValidTimerNameOrWarn(SimpleTimer simpleTimer, CommandSender commandSender, String timerName) {
+        if (timerName.isEmpty()) {
+            commandSender.sendMessage("Timer name cannot be empty.");
+            return false;
+        }
+        if (timerName.length() > 20) {
+            commandSender.sendMessage("Timer name must not exceed 20 characters.");
+            return false;
+        }
+        if (!timerName.matches("[a-zA-Z0-9_-]+")) {
+            commandSender.sendMessage("Only letters, numbers, underscores (_) and dashes (-) are allowed.");
+            return false;
+        }
+        if (simpleTimer.getTimerManager().getTimer(timerName) != null) {
+            commandSender.sendMessage("A timer with that name already exists.");
+            return false;
+        }
+
+        return true;
     }
 }
